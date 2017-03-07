@@ -1,21 +1,34 @@
+# == Class: cvmfs::services
+# Manages the cvmfs services. Optinally this also manages the autofs services
+# as well.
 #
-# Copyright (c) IN2P3 Computing Centre, IN2P3, CNRS
+# === Parameters
 #
-# Contributor(s) : ccin2p3
+# === Authors
 #
+# Steve Traylen <steve.traylen@cern.ch>
+#
+# === Copyright
+#
+# Copyright 2012 CERN
+#
+class cvmfs::service (
+  $mount_method          = $cvmfs::mount_method,
+  $manage_autofs_service = $cvmfs::manage_autofs_service,
+) inherits cvmfs {
 
-# == Class cvmfs::service
-#
-# This class is called from cvmfs
-# It ensures the service is running
-#
-class cvmfs::service {
+  # CVMFS 2.1 at least uses cvmfs_config.
 
-  service { $cvmfs::service_name:
-    ensure     => running,
-    enable     => true,
-    hasstatus  => true,
-    hasrestart => true,
+  exec{'Reloading cvmfs':
+    command     => '/usr/bin/cvmfs_config reload',
+    refreshonly => true,
+  }
+  if $manage_autofs_service and $mount_method == 'autofs' {
+    ensure_resource('service','autofs',
+      { ensure     => true,
+        enable     => true,
+        hasrestart => true,
+      }
+    )
   }
 }
-# vim: ft=puppet
