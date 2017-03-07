@@ -86,3 +86,4 @@ class cvmfs::params {
   $cvmfs_sync_minute        = hiera('cvmfs_sync_minute','*/15')
 
 }
+

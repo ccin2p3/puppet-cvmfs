@@ -352,3 +352,4 @@ Steve Traylen <steve.traylen@cern.ch>
 ## Support
 https://github.com/cvmfs/puppet-cvmfs
 
+

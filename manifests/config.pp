@@ -118,3 +118,4 @@ class cvmfs::config (
     }
   }
 }
+

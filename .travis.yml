@@ -39,4 +39,3 @@ deploy:
     # Only publish if our main Ruby target builds
     rvm: 2.3.1
 
-

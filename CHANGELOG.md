@@ -207,3 +207,4 @@
 
 ###Bugfixes
 -  Puppet 3.4 compatability for ensure_resources.
+
