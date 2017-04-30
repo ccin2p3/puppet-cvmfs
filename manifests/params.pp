@@ -41,6 +41,7 @@ class cvmfs::params {
   $cvmfs_server_url       = hiera('cvmfs_server_url','')
   $default_cvmfs_cache_base  = '/var/lib/cvmfs'
 
+  $cvmfs_memcache_size    = undef
   $cvmfs_cache_base       = hiera('cvmfs_cache_base',$default_cvmfs_cache_base)
   $cvmfs_timeout          = hiera('cvmfs_timeout','')
   $cvmfs_timeout_direct   = hiera('cvmfs_timeout','')
@@ -86,4 +87,3 @@ class cvmfs::params {
   $cvmfs_sync_minute        = hiera('cvmfs_sync_minute','*/15')
 
 }
-

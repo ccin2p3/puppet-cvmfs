@@ -9,6 +9,7 @@ class cvmfs (
   $cvmfs_http_proxy           = $cvmfs::params::cvmfs_http_proxy,
   $cvmfs_cache_base           = $cvmfs::params::cvmfs_cache_base,
   $cvmfs_mount_rw             = $cvmfs::params::cvmfs_mount_rw,
+  $cvmfs_memcache_size        = $cvmfs::params::cvmfs_memcache_size,
   $cvmfs_timeout              = $cvmfs::params::cvmfs_timeout,
   $cvmfs_timeout_direct       = $cvmfs::params::cvmfs_timeout_direct,
   $cvmfs_nfiles               = $cvmfs::params::cvmfs_nfiles,
@@ -48,11 +49,11 @@ class cvmfs (
   validate_bool($cvmfs_yum_manage_repo)
   validate_re($mount_method,['^autofs$','^mount$','^none$'],'$mount_method must be one of autofs (default), mount or none')
 
-  anchor{'cvmfs::begin':} ->
-  class{'::cvmfs::install':} ->
-  class{'::cvmfs::config':} ~>
-  class{'::cvmfs::service':} ->
-  anchor{'cvmfs::end':}
+  anchor{'cvmfs::begin':}
+  -> class{'::cvmfs::install':}
+  -> class{'::cvmfs::config':}
+  ~> class{'::cvmfs::service':}
+  -> anchor{'cvmfs::end':}
 
   # Finally allow the individual repositories to be loaded from hiera.
   if is_hash($cvmfs_hash) {
@@ -63,4 +64,3 @@ class cvmfs (
   }
 
 }
-
