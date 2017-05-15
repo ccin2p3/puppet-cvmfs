@@ -22,11 +22,12 @@ define cvmfs::zero(
   include ::cvmfs::zero::install
   include ::cvmfs::zero::config
   include ::cvmfs::zero::service
+  include ::cvmfs::zero::yum
 
   group{"$group":
     gid => $gid,
   }
-  user{$user:
+  user{"$user":
     uid        => $uid,
     gid        => $gid,
     comment    => "cvmfs shared account for repo ${repo}",
