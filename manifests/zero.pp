@@ -23,8 +23,6 @@ define cvmfs::zero(
   include ::cvmfs::zero::config
   include ::cvmfs::zero::service
 
-  notice("role zero cvmfs module")
-
   group{$group:
     gid => $gid,
   }
