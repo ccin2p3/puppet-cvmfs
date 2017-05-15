@@ -55,7 +55,7 @@ class cvmfs::zero::yum (
           }
         }
         '7': {
-          notify{'CL7 aufs is not necessary':}
+          notify{'CL7 aufs is not necessary again':}
         }
         default: {
           fail("${::operatingsystem}: version ${::operatingsystemmajrelease} not tested yet")
