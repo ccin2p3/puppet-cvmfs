@@ -1,11 +1,11 @@
 # Class cvmfs::server::yum
 class cvmfs::zero::yum (
   #$cvmfs_yum_kernel           = $cvmfs::params::cvmfs_yum_kernel,
-  $cvmfs_yum_kernel           = hiera('cvmfs_yum_kernel','http://cern.ch/cvmrepo/yum/cvmfs-kernel/EL/${::operatingsystemmajrelease}/${::architecture}')
-  $cvmfs_yum_kernel_enabled   = $cvmfs::params::cvmfs_yum_kernel_enabled,
-  $cvmfs_yum                  = $cvmfs::params::cvmfs_yum,
-  $cvmfs_yum_testing          = $cvmfs::params::cvmfs_yum_testing,
-  $cvmfs_yum_testing_enabled  = $cvmfs::params::cvmfs_yum_testing_enabled,
+  $cvmfs_yum_kernel           = hiera('cvmfs_yum_kernel','http://cern.ch/cvmrepo/yum/cvmfs-kernel/EL/${::operatingsystemmajrelease}/${::architecture}'),
+  $cvmfs_yum_kernel_enabled   = hiera('cvmfs_yum_kernel_enabled','1'),
+  $cvmfs_yum                  = hiera('cvmfs_yum',"http://cern.ch/cvmrepo/yum/cvmfs/EL/${::operatingsystemmajrelease}/${::architecture}"),
+  $cvmfs_yum_testing          = hiera('cvmfs_yum_testing',"http://cern.ch/cvmrepo/yum/cvmfs-testing/EL/${::operatingsystemmajrelease}/${::architecture}"),
+  $cvmfs_yum_testing_enabled  = hiera('cvmfs_yum_testing_enabled','0')
 ) {
 
   yumrepo{'cvmfs':
