@@ -56,7 +56,7 @@ class cvmfs::yum (
   }
 
   #  Copy out the gpg key once only ever.
-  file{'/etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM':
+  file{'/etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM1':
     ensure  => file,
     source  => 'puppet:///modules/cvmfs/RPM-GPG-KEY-CernVM',
     replace => false,
