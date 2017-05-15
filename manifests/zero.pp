@@ -23,7 +23,7 @@ define cvmfs::zero(
   include ::cvmfs::zero::config
   include ::cvmfs::zero::service
 
-  group{$group:
+  group{"$group":
     gid => $gid,
   }
   user{$user:
