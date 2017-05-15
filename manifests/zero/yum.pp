@@ -38,17 +38,35 @@ class cvmfs::zero::yum (
     mode    => '0644',
   }
 
-
-
-  yumrepo{'cvmfs-kernel':
-    descr       => "CVMFS yum kernel repository for el${::operatingsystemmajrelease}",
-    baseurl     => $cvmfs_yum_kernel,
-    gpgcheck    => 1,
-    gpgkey      => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM',
-    enabled     => $cvmfs_yum_kernel_enabled,
-    includepkgs => 'kernel,aufs2-util,kernel-*,kmod-zfs-*,kmod-spl-*',
-    priority    => 5,
-    require     => File['/etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM'],
-  }
+ case $::osfamily {
+    'RedHat': {
+      case $::operatingsystemmajrelease {
+        '6': {
+          yumrepo{'cvmfs-kernel':
+          descr       => "CVMFS yum kernel repository for el${::operatingsystemmajrelease}",
+          baseurl     => $cvmfs_yum_kernel,
+          gpgcheck    => 1,
+          gpgkey      => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM',
+          enabled     => $cvmfs_yum_kernel_enabled,
+          includepkgs => 'kernel,aufs2-util,kernel-*,kmod-zfs-*,kmod-spl-*',
+          priority    => 5,
+          require     => File['/etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM'],
+          }
+        }
+        '7': {
+          notify{'CL7 aufs is not necessary':}
+        }
+        default: {
+          fail("${::operatingsystem}: version ${::operatingsystemmajrelease} not tested yet")
+        }
+      }
+    }
+    'Debian': {
+      fail("osfamily `${::osfamily}` not tested")
+    }
+    default: {
+      fail("osfamily `${::osfamily}` not supported")
+    }
+  }  
 }
 
