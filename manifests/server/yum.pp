@@ -7,7 +7,7 @@ class cvmfs::server::yum (
   $cvmfs_yum                 = $cvmfs::params::cvmfs_yum
 ) {
 
-  yumrepo{'cvmfs':
+  yumrepo{'cvmfs1':
     descr       => "CVMFS yum repository for el${::operatingsystemmajrelease}",
     baseurl     => $cvmfs_yum,
     gpgcheck    => 1,
@@ -17,7 +17,7 @@ class cvmfs::server::yum (
     priority    => 80,
     require     => File['/etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM'],
   }
-  yumrepo{'cvmfs-testing':
+  yumrepo{'cvmfs-testing1':
     descr       => "CVMFS yum testing repository for el${::operatingsystemmajrelease}",
     baseurl     => $cvmfs_yum_testing,
     gpgcheck    => 1,
@@ -40,7 +40,7 @@ class cvmfs::server::yum (
 
 
 
-  yumrepo{'cvmfs-kernel':
+  yumrepo{'cvmfs-kernel1':
     descr       => "CVMFS yum kernel repository for el${::operatingsystemmajrelease}",
     baseurl     => $cvmfs_yum_kernel,
     gpgcheck    => 1,
