@@ -58,6 +58,7 @@ class cvmfs::params {
   $cvmfs_use_geoapi       = undef
   $cvmfs_env_variables    = undef
   $cvmfs_follow_redirects = undef
+  $cvmfs_yum_kernel         = hiera('cvmfs::yum_kernel','') 
 
   #The version of cvmfs to install, should be present and latest,
   # or an exact version number of the package.
@@ -81,7 +82,7 @@ class cvmfs::params {
   # Only used is cvmfs::server is enabled.
   $cvmfs_kernel_version     = hiera('cvmfs_kernel_version','present')
   $cvmfs_aufs2_version      = present
-  $cvmfs_yum_kernel         = hiera('cvmfs_yum_kernel',"http://cern.ch/cvmrepo/yum/cvmfs-kernel/EL/${::operatingsystemmajrelease}/${::architecture}")
+
   $cvmfs_yum_kernel_enabled = hiera('cvmfs_yum_kernel_enabled','1')
 
   $cvmfs_sync_minute        = hiera('cvmfs_sync_minute','*/15')
