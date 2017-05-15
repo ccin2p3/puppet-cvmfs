@@ -42,7 +42,7 @@ class cvmfs::zero::yum (
 
   yumrepo{'cvmfs-kernel':
     descr       => "CVMFS yum kernel repository for el${::operatingsystemmajrelease}",
-    baseurl     => $cvmfs_yum_kernel,
+    baseurl     => "http://cern.ch/cvmrepo/yum/cvmfs-kernel/EL/${::operatingsystemmajrelease}/${::architecture}",
     gpgcheck    => 1,
     gpgkey      => 'file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CernVM',
     enabled     => $cvmfs_yum_kernel_enabled,
