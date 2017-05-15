@@ -14,10 +14,6 @@ class cvmfs::zero::install (
   # We grab latest kernel unless we have an aufs one running
   # already.
 
-
-
-
-  
   case $::osfamily {
     'RedHat': {
       case $::operatingsystemmajrelease {
