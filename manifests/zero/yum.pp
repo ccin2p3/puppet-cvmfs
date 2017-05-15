@@ -1,6 +1,7 @@
 # Class cvmfs::server::yum
 class cvmfs::zero::yum (
-  $cvmfs_yum_kernel           = $cvmfs::params::cvmfs_yum_kernel,
+  #$cvmfs_yum_kernel           = $cvmfs::params::cvmfs_yum_kernel,
+  $cvmfs_yum_kernel           = hiera('cvmfs_yum_kernel','http://cern.ch/cvmrepo/yum/cvmfs-kernel/EL/${::operatingsystemmajrelease}/${::architecture}')
   $cvmfs_yum_kernel_enabled   = $cvmfs::params::cvmfs_yum_kernel_enabled,
   $cvmfs_yum                  = $cvmfs::params::cvmfs_yum,
   $cvmfs_yum_testing          = $cvmfs::params::cvmfs_yum_testing,
