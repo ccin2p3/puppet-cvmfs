@@ -1,4 +1,4 @@
-# See README.md 
+# See README.md
 define cvmfs::zero(
   $user,
   $uid,
@@ -17,18 +17,16 @@ define cvmfs::zero(
   $auto_gc_timespan = '3 days ago',
   $ignore_xdir_hardlinks = false,
   $creator_version = '2.3.0-1',
+  $mime_expire = 120,
 ) {
-  include ::cvmfs::params
   include ::cvmfs::zero::install
   include ::cvmfs::zero::config
   include ::cvmfs::zero::service
-  include ::cvmfs::zero::yum
 
-  group{ '$group':
-    name => $group,
+  group{$group:
     gid => $gid,
   }
-  user{ '$user':
+  user{$user:
     uid        => $uid,
     gid        => $gid,
     comment    => "cvmfs shared account for repo ${repo}",
