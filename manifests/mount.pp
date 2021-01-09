@@ -14,6 +14,8 @@ define cvmfs::mount($cvmfs_quota_limit = undef,
   $cmvfs_mount_rw = undef,
   $cvmfs_memcache_size = undef,
   $cvmfs_claim_ownership = undef,
+  $cvmfs_uid_map = undef,
+  $cvmfs_gid_map = undef,
   $cvmfs_follow_redirects = undef,
   $mount_options = 'defaults,_netdev,nodev',
   $mount_method = $cvmfs::mount_method,
@@ -22,11 +24,24 @@ define cvmfs::mount($cvmfs_quota_limit = undef,
   Optional[Integer] $cvmfs_external_timeout = undef,
   Optional[Integer] $cvmfs_external_timeout_direct = undef,
   Optional[String] $cvmfs_external_url = undef,
+  Optional[String[1]] $cvmfs_repository_tag = undef,
 ) {
 
   include ::cvmfs
 
   $repo = $name
+
+  $_cvmfs_id_map_file_prefix = "/etc/cvmfs/config.d/${repo}"
+  if $cvmfs_uid_map {
+    cvmfs::id_map{ "${_cvmfs_id_map_file_prefix}.uid_map":
+      map => $cvmfs_uid_map,
+    }
+  }
+  if $cvmfs_gid_map {
+    cvmfs::id_map{ "${_cvmfs_id_map_file_prefix}.gid_map":
+      map => $cvmfs_gid_map,
+    }
+  }
 
   file{"/etc/cvmfs/config.d/${repo}.local":
     ensure  =>  file,
@@ -37,7 +52,7 @@ define cvmfs::mount($cvmfs_quota_limit = undef,
     require => Class['cvmfs::install'],
     notify  => Class['cvmfs::service'],
   }
-  if $cvmfs_repo_list {
+  if $cvmfs_repo_list and $cvmfs::cvmfs_repositories =~ Undef {
     concat::fragment{"cvmfs_default_local_${repo}":
       target  => '/etc/cvmfs/default.local',
       order   => 6,

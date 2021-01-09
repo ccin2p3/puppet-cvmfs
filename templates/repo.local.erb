@@ -29,6 +29,12 @@ CVMFS_CACHE_BASE='<%= @cvmfs_cache_base %>'
 <% if @cvmfs_claim_ownership and  @cvmfs_claim_ownership != '' -%>
 CVMFS_CLAIM_OWNERSHIP='<%= @cvmfs_claim_ownership %>'
 <% end -%>
+<% if @cvmfs_uid_map -%>
+CVMFS_UID_MAP='<%= @_cvmfs_id_map_file_prefix %>.uid_map'
+<% end -%>
+<% if @cvmfs_gid_map -%>
+CVMFS_GID_MAP='<%= @_cvmfs_id_map_file_prefix %>.gid_map'
+<% end -%>
 <% if @cvmfs_server_url and @cvmfs_server_url != '' -%>
 CVMFS_SERVER_URL='<%= @cvmfs_server_url %>'
 <% end -%>
@@ -68,6 +74,9 @@ CVMFS_FOLLOW_REDIRECTS='<%= @cvmfs_follow_redirects %>'
 <% if @cvmfs_external_fallback_proxy -%>
 CVMFS_EXTERNAL_FALLBACK_PROXY='<%= @cvmfs_external_fallback_proxy %>'
 <% end -%>
+<% if @cvmfs_repository_tag -%>
+CVMFS_REPOSITORY_TAG='<%= @cvmfs_repository_tag %>'
+<% end -%>
 <% if @cvmfs_external_http_proxy -%>
 CVMFS_EXTERNAL_HTTP_PROXY='<%= @cvmfs_external_http_proxy %>'
 <% end -%>
@@ -89,5 +98,8 @@ CVMFS_ALIEN_CACHE='<%= @cvmfs_alien_cache %>'
 <% end -%>
 <% if @cvmfs_shared_cache -%>
 CVMFS_SHARED_CACHE='<%= @cvmfs_shared_cache %>'
+<% end -%>
+<% if @cvmfs_instrument_fuse -%>
+CVMFS_INSTRUMENT_FUSE=true
 <% end -%>
 <%end-%>

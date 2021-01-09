@@ -18,9 +18,12 @@ class cvmfs::config (
   $cvmfs_repo_list                     = $cvmfs::cvmfs_repo_list,
   $cvmfs_memcache_size                 = $cvmfs::cvmfs_memcache_size,
   $cvmfs_claim_ownership               = $cvmfs::cvmfs_claim_ownership,
+  $cvmfs_uid_map                       = $cvmfs::cvmfs_uid_map,
+  $cvmfs_gid_map                       = $cvmfs::cvmfs_gid_map,
   $default_cvmfs_partsize              = $cvmfs::default_cvmfs_partsize,
   Optional[Integer] $cvmfs_dns_max_ttl = $cvmfs::cvmfs_dns_max_ttl,
   Optional[Integer] $cvmfs_dns_min_ttl = $cvmfs::cvmfs_dns_min_ttl,
+  $cvmfs_repositories                  = $cvmfs::cvmfs_repositories,
 ) inherits cvmfs {
 
   # If cvmfspartsize fact exists use it, otherwise use a sensible default.
@@ -44,7 +47,6 @@ class cvmfs::config (
     purge   => true,
     recurse => true,
     ignore  => '*.conf',
-    require => Package['cvmfs'],
     owner   => root,
     group   => root,
     mode    => '0755',
@@ -55,7 +57,6 @@ class cvmfs::config (
     group   => root,
     mode    => '0644',
     content => "This directory is managed by puppet but *.conf files are ignored from purging\n",
-    require => File['/etc/cvmfs/domain.d'],
   }
   file{'/etc/cvmfs/config.d/README.PUPPET':
     ensure  => file,
@@ -63,7 +64,6 @@ class cvmfs::config (
     group   => root,
     mode    => '0644',
     content => "This directory is managed by puppet but *.conf files are ignored from purging\n",
-    require => File['/etc/cvmfs/config.d'],
   }
 
   # Clobber the /etc/fuse.conf, hopefully no
@@ -78,18 +78,35 @@ class cvmfs::config (
     }
   )
   concat{'/etc/cvmfs/default.local':
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => Class['cvmfs::install'],
-    notify  => Class['cvmfs::service'],
+    owner => 'root',
+    group => 'root',
+    mode  => '0644',
+  }
+  # UID and GID map are stored in separate files and included in the config.
+  $_cvmfs_id_map_file_prefix = '/etc/cvmfs/config.d/default'
+  if $cvmfs_uid_map {
+    cvmfs::id_map{"${_cvmfs_id_map_file_prefix}.uid_map":
+      map => $cvmfs_uid_map,
+    }
+  }
+  if $cvmfs_gid_map {
+    cvmfs::id_map{"${_cvmfs_id_map_file_prefix}.gid_map":
+      map => $cvmfs_gid_map,
+    }
   }
   concat::fragment{'cvmfs_default_local_header':
     target  => '/etc/cvmfs/default.local',
     order   => 0,
     content => template('cvmfs/repo.local.erb'),
   }
-  if $cvmfs_repo_list {
+
+  if $cvmfs_repositories {
+    concat::fragment{'cvmfs_default_local_repo':
+      target  => '/etc/cvmfs/default.local',
+      order   => 5,
+      content => "CVMFS_REPOSITORIES='${cvmfs_repositories}'\n",
+    }
+  } elsif $cvmfs_repo_list {
     concat::fragment{'cvmfs_default_local_repo_end':
       target  => '/etc/cvmfs/default.local',
       order   => 7,
@@ -103,22 +120,26 @@ class cvmfs::config (
   }
 
   if $mount_method == 'autofs' {
-    $_notifyservice = $manage_autofs_service ? {
-      true    => Service['autofs'],
-      false   => undef,
-      default => undef,
-    }
-    augeas{'cvmfs_automaster':
-      context => '/files/etc/auto.master/',
-      lens    => 'Automaster.lns',
-      incl    => '/etc/auto.master',
-      changes => [
-        'set 01      /cvmfs',
-        'set 01/type program',
-        'set 01/map  /etc/auto.cvmfs',
-      ],
-      onlyif  => 'match *[map="/etc/auto.cvmfs"] size == 0',
-      notify  => $_notifyservice,
+    if versioncmp($facts['os']['release']['major'],'7') <= 0 {
+      augeas{'cvmfs_automaster':
+        context => '/files/etc/auto.master/',
+        lens    => 'Automaster.lns',
+        incl    => '/etc/auto.master',
+        changes => [
+          'set 01      /cvmfs',
+          'set 01/type program',
+          'set 01/map  /etc/auto.cvmfs',
+        ],
+        onlyif  => 'match *[map="/etc/auto.cvmfs"] size == 0',
+      }
+    } else {
+      file{'/etc/auto.master.d/cvmfs.autofs':
+        ensure  => file,
+        content => "Puppet installed\n/cvmfs  program:/etc/auto.cvmfs\n",
+        owner   => root,
+        group   => root,
+        mode    => '0644',
+      }
     }
   }
 }
