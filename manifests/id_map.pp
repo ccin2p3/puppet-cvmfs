@@ -1,5 +1,9 @@
-# == Define: cvmfs::id_map
-define cvmfs::id_map(
+# @summary Create a map file uid or gid mappings
+#
+# @param map Hash of `{from => to}` pairs
+# @param location Path to write map to.
+#
+define cvmfs::id_map (
   Hash[Variant[Integer,String], Integer, 1] $map,
   Stdlib::Absolutepath                      $location = $title
 ) {
